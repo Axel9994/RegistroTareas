@@ -1,0 +1,68 @@
+﻿@model PagedList.IPagedList<RegistroTareas.Models.Tarea>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Lista de Tareas";
+}
+
+<h2>Lista de Tareas</h2>
+
+<div class="col-md-10">
+    @using (Html.BeginForm("Index", "Tarea", FormMethod.Get))
+    {
+        @Html.TextBox("busqueda", ViewBag.busqueda as string)
+        <input type="submit" value="Buscar" class="btn btn-info" />
+    }
+</div>
+
+<p>
+    @Html.ActionLink("Crear Nueva Tarea", "Create", null, new { @class = "btn btn-success" })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Nombre
+        </th>
+        <th>
+            Fecha de Inicio
+        </th>
+        <th>
+            Fecha de Entrega
+        </th>
+        <th>
+            Descripción
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Fecha_Inicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Fecha_Entrega)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", new { id = item.Id }, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Ver", "Details", new { id = item.Id }, new { @class = "btn btn-info" })
+                @Html.ActionLink("Eliminar", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
+            </td>
+        </tr>
+    }
+
+</table>
+
+<br />
+Pagína @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { pagina = page, busqueda = ViewBag.busqueda }))
